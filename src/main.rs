@@ -104,7 +104,7 @@ enum Subcommand {
     #[structopt(name = "github-auth")]
     GitHubAuth(GitHubAuthCommand),
 
-    /// Opens the foreman.toml file in %USERPROFILE%/.foreman/foreman.toml on windows or ~/.foreman/foreman.toml on Unix systems
+    /// Opens the .foreman folder in %USERPROFILE%/.foreman on windows or ~/.foreman/ on Unix systems
     Open,
 }
 
@@ -168,14 +168,14 @@ fn actual_main() -> io::Result<()> {
             println!("GitHub auth saved successfully.");
         }
         Subcommand::Open => {
+            let path = "/.foreman";
+
             if cfg!(windows) {
-                let path = "/.foreman/foreman.toml";
-                let userprofile = std::env::var("USERPROFILE").unwrap();
+                let userprofile = env::var("USERPROFILE").unwrap();
 
                 open(format!("{0}{1}", userprofile, path)).unwrap();
             } else if cfg!(unix) {
-                let path = "/.foreman/foreman.toml";
-                let home = std::env::var("HOME").unwrap();
+                let home = env::var("HOME").unwrap();
 
                 open(format!("{0}{1}", home, path)).unwrap();
             }
